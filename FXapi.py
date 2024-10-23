@@ -67,10 +67,10 @@ def trade(trader_id, qty, side):
         # Make a trade decision based on EMA
         if current_price < ema:
             print(f"Buying at {current_price}")
-            trade2(trader_id, 1, Side.BUY)
+            trade2(1, Side.BUY)
         elif current_price > ema:
             print(f"Selling at {current_price}")
-            trade2(trader_id, 1, Side.SELL)
+            trade2(1, Side.SELL)
 
     # Calculate RSI if needed
     rsi = calc_rsi(prices)
