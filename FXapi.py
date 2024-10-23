@@ -36,7 +36,7 @@ def trade(trader_id, qty, side):
         trading_algorithm(qty, trader_id, side)
 
 def trading_algorithm(qty, trader_id, side):
-    prices = []
+    prices = [get_price_history()]
     ema = None
     ema_period = 2
     alpha = 2/(ema_period+1)
