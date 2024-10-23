@@ -127,5 +127,5 @@ if __name__ == '__main__':
         print(f"RSI: {trade_data['rsi']}")
 
     print("Expected to trade at:" + str(get_price()))
-     print("Effectively traded at:" + str(trade(TRADER_ID, 100, Side.BUY)))
+    print("Effectively traded at:" + str(trade(TRADER_ID, 100, Side.BUY)))
 
