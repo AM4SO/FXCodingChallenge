@@ -29,20 +29,52 @@ def get_price_history():
     print("Failed to get price history.")
 
 def trade(trader_id, qty, side):
-    api_url = URL + "/trade/EURGBP"
-    data = {"trader_id": trader_id, "quantity": qty, "side": side}
-    res = requests.post(api_url, json=data)
-    if res.status_code == 200:
-        resp_json = json.loads(res.content.decode('utf-8'))
-        prices = [get_price_history()]
-        for i in range(qty):
-            price = resp_json["price"]
-            prices.append(price)
-        #EMA formula, takes last value minus first value divided by n+1. Add first value.
-        #TODO: Make it less sensitive.
-        ema = (float(prices[-1]) - float(prices[0]) / (1 + 1)) + float(prices[0])
-        return ema
-    return None
+    prices = []
+    ema = None
+    ema_period = 2
+    alpha = 2 / (ema_period + 1)
+
+    # Get initial price history
+    price_history = get_price_history()
+    if price_history is None:
+        print("Failed to retrieve price history.")
+        return None
+
+    # Extract prices from the price history
+    for _, price in price_history:
+        prices.append(float(price))
+
+    # Start trading loop
+    for _ in range(qty):
+        current_price = get_price()
+
+        if current_price is None:
+            print("Failed to retrieve current price.")
+            continue
+
+        # Append current price to list
+        prices.append(float(current_price))
+
+        # Initialize EMA with the first price
+        if ema is None:
+            ema = current_price
+        else:
+            # Calculate EMA
+            ema = ema + alpha * (current_price - ema)
+
+        # Make a trade decision based on EMA
+        if current_price < ema:
+            print(f"Buying at {current_price}")
+            trade2(trader_id, 1, Side.BUY)
+        elif current_price > ema:
+            print(f"Selling at {current_price}")
+            trade2(trader_id, 1, Side.SELL)
+
+    # Calculate RSI if needed
+    rsi = calc_rsi(prices)
+
+    # Return trade data
+    return {"ema": ema, "rsi": rsi}
 
 def trade2(trader_id, qty, side): ## returns trade execution price
     api_url = URL + "/trade/EURGBP"
