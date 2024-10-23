@@ -23,11 +23,17 @@ def trade(trader_id, qty, side):
     res = requests.post(api_url, json=data)
     if res.status_code == 200:
         resp_json = json.loads(res.content.decode('utf-8'))
-        if resp_json["success"]:
-            return resp_json["price"]
+        prices = []
+        for i in range(qty):
+            price = resp_json["price"]
+            prices.append(price)
+        #EMA formula, takes last value minus first value divided by n+1. Add first value.
+        #TODO: Make it less sensitive.
+        ema = (float(prices[-1]) - float(prices[0]) / (1 + 1)) + float(prices[0])
+        return ema
     return None
 
 
 if __name__ == '__main__':
     print("Expected to trade at:" + str(get_price()))
-    print("Effectively traded at:" + trade(TRADER_ID, 100, Side.BUY))
+    print("Effectively traded at:" + str(trade(TRADER_ID, 100, Side.BUY)))
