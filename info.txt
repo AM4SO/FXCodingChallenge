@@ -1,0 +1,8 @@
+Some ideas from past games 
+ - moving average convergence/divergence
+ - monte Carlo simulation
+ - exponential moving average
+ - abnormal volatility (linear regression using a sliding window to obtain the gradient and next px prediction)
+ - RSI (relative strength index)
+
+These are all to try to generate signals IFF you want to trade outside of the main events
