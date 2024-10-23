@@ -16,6 +16,7 @@ def get_price():
         return json.loads(res.content.decode('utf-8'))["price"]
     return None
 
+## returns [(time, price), (time, price)]
 def get_price_history():
     api_url = URL + "/priceHistory/EURGBP"
     res = requests.get(api_url)
