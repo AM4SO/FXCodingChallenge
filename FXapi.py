@@ -1,17 +1,13 @@
-
-# python -m pip install requests
-
 import json
 import requests
 
-URL = "http://fx-trading-game.westeurope.azurecontainer.io:443"
-TRADER_ID = "your_trader_id_here"
+URL = "http://fx-trading-game-leicester-challenge.westeurope.azurecontainer.io:443/"
+TRADER_ID = "3ohLR6Pr6n8OKmWXyVbURuoYfKRAce02"
 
 
 class Side:
     BUY = "buy"
     SELL = "sell"
-
 
 def get_price():
     api_url = URL + "/price/EURGBP"
