@@ -16,6 +16,16 @@ def get_price():
         return json.loads(res.content.decode('utf-8'))["price"]
     return None
 
+def get_price_history():
+    api_url = URL + "/priceHistory/EURGBP"
+    res = requests.get(api_url)
+    if res.status_code == 200:
+        trades = json.loads(res.content.decode('utf-8'))
+        ret = []
+        for k in trades.keys():
+            ret.append((k, trades[k]))
+        return ret
+    print("Failed to get price history.")
 
 def trade(trader_id, qty, side):
     api_url = URL + "/trade/EURGBP"
@@ -52,6 +62,11 @@ def trade2(trader_id, qty, side):
 
 
 
+
+
 if __name__ == '__main__':
-    print("Expected to trade at:" + str(get_price()))
-    print("Effectively traded at:" + str(trade2(TRADER_ID, 1, Side.BUY)))
+    #print("Expected to trade at:" + str(get_price()))
+    #print("Effectively traded at:" + str(trade2(TRADER_ID, 1, Side.BUY)))
+    print("Getting prices")
+    get_price_history()
+    print("Got price history")
