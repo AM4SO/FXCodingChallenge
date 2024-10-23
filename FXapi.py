@@ -4,6 +4,8 @@ import requests
 URL = "http://fx-trading-game-leicester-challenge.westeurope.azurecontainer.io:443/"
 TRADER_ID = "3ohLR6Pr6n8OKmWXyVbURuoYfKRAce02"
 
+SIDE_BUY = "Buy"
+SIDE_SELL = "Sell"
 
 class Side:
     BUY = "buy"
@@ -44,9 +46,15 @@ def trade(trader_id, qty, side):
         return ema
     return None
 
-def trade2(trader_id, qty, side): ## returns trade execution price
+def getNormalisedCapitals():
+    api_url = URL + "/normalizedCapitals"
+    res = requests.get(api_url)
+    res = json.loads(res.content.decode("utf-8"))
+    return res["Team5"]
+
+def trade2(qty, side): ## returns trade execution price
     api_url = URL + "/trade/EURGBP"
-    data = {"trader_id": trader_id, "quantity": qty, "side": side}
+    data = {"trader_id": TRADER_ID, "quantity": qty, "side": side}
     res = requests.post(api_url, json=data)
     if res.status_code == 200:
         resp_json = json.loads(res.content.decode('utf-8'))
@@ -86,7 +94,6 @@ if __name__ == '__main__':
         print(f"Effectively traded at: {trade_data['ema']}")
         print(f"RSI: {trade_data['rsi']}")
 
-   # print("Expected to trade at:" + str(get_price()))
-    # print("Effectively traded at:" + str(trade(TRADER_ID, 100, Side.BUY)))
-
+    print("Expected to trade at:" + str(get_price()))
+     print("Effectively traded at:" + str(trade(TRADER_ID, 100, Side.BUY)))
 
