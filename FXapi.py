@@ -44,6 +44,18 @@ def trade(trader_id, qty, side):
         return ema
     return None
 
+def trade2(trader_id, qty, side): ## returns trade execution price
+    api_url = URL + "/trade/EURGBP"
+    data = {"trader_id": trader_id, "quantity": qty, "side": side}
+    res = requests.post(api_url, json=data)
+    if res.status_code == 200:
+        resp_json = json.loads(res.content.decode('utf-8'))
+        price = resp_json["price"]
+        
+        return price
+    print("Failed to execute trade.")
+    return None
+
 
 # Function to calculate RSI (Relative Strength Index)
 def calc_rsi(prices, period=14):
