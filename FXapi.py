@@ -22,29 +22,35 @@ def trade(trader_id, qty, side):
     data = {"trader_id": trader_id, "quantity": qty, "side": side}
     res = requests.post(api_url, json=data)
     if res.status_code == 200:
-        resp_json = json.loads(res.content.decode('utf-8'))
-        trading_algorithm(qty, resp_json, trader_id)
+        trading_algorithm(qty, trader_id, side)
 
-def trading_algorithm(qty, resp_json, trader_id):
-    prices = [resp_json["price"]]
-    ema = prices[0]
+def trading_algorithm(qty, trader_id, side):
+    prices = []
+    ema = None
     ema_period = 2
     alpha = 2/(ema_period+1)
-    for i in range(1, qty):
-        #TODO: Get new prices instead of constantly grabbing same ones
-        current_price = resp_json["price"]
-        prices.append(current_price)
-        ema = float(ema) + alpha * (float(current_price)-float(ema))
+    for i in range(qty):
+        api_url = URL + "/price/EURGBP"
+        data = {"trader_id": trader_id, "quantity": qty, "side": side}
+        res = requests.get(api_url, json=data)
+        if res.status_code == 200:
+            json_res = json.loads(res.content.decode('utf-8'))
+            current_price = float(json_res["price"])
+            prices.append(current_price)
+            # Initialize EMA with the first price
+            if ema is None:
+                ema = current_price
+            else:
+                # Calculate EMA
+                ema = ema + alpha * (current_price - ema)
 
-        #Buy when low
-        if float(current_price) > float(ema):
-            print(f"Buying at {current_price}")
-            trade(trader_id, i, Side.BUY)
-
-        #Sell when high
-        elif float(current_price) < float(ema):
-            print(f"Selling at {current_price}")
-            trade(trader_id, i, Side.SELL)
+            if current_price > ema:
+                print(f"Buying at {current_price}")
+                trade(trader_id, 1, 'BUY')
+            elif current_price < ema:
+                print(f"Selling at {current_price}")
+                trade(trader_id, 1, 'SELL')
+    
 
 
 if __name__ == '__main__':
