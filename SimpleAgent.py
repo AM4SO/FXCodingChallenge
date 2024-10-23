@@ -1,0 +1,3 @@
+import FXapi
+
+class SimpleAgent:
