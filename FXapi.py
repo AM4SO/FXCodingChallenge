@@ -23,6 +23,7 @@ def trade(trader_id, qty, side):
     res = requests.post(api_url, json=data)
     if res.status_code == 200:
         resp_json = json.loads(res.content.decode('utf-8'))
+        print(res.content.decode('utf-8'))
         prices = []
         for i in range(qty):
             price = resp_json["price"]
@@ -34,6 +35,23 @@ def trade(trader_id, qty, side):
     return None
 
 
+def trade2(trader_id, qty, side):
+    api_url = URL + "/trade/EURGBP"
+    data = {"trader_id": trader_id, "quantity": qty, "side": side}
+    res = requests.post(api_url, json=data)
+    if res.status_code == 200:
+        resp_json = json.loads(res.content.decode('utf-8'))
+        print(res.content.decode('utf-8'))
+
+        price = resp_json["price"]
+        #EMA formula, takes last value minus first value divided by n+1. Add first value.
+        #TODO: Make it less sensitive.
+        return price
+    return None
+
+
+
+
 if __name__ == '__main__':
     print("Expected to trade at:" + str(get_price()))
-    print("Effectively traded at:" + str(trade(TRADER_ID, 100, Side.BUY)))
+    print("Effectively traded at:" + str(trade2(TRADER_ID, 1, Side.BUY)))
