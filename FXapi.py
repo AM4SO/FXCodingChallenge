@@ -44,13 +44,13 @@ def trading_algorithm(qty, trader_id, side):
                 # Calculate EMA
                 ema = ema + alpha * (current_price - ema)
 
-            if current_price > ema:
+            if current_price < ema:
                 print(f"Buying at {current_price}")
-                trade(trader_id, 1, 'BUY')
-            elif current_price < ema:
+                trade(trader_id, 1, Side.BUY)
+            elif current_price > ema:
                 print(f"Selling at {current_price}")
-                trade(trader_id, 1, 'SELL')
-    
+                trade(trader_id, 1, Side.SELL)
+
 
 
 if __name__ == '__main__':
